@@ -1,6 +1,7 @@
 package pl.metastack.metarx
 
 import scala.collection.mutable
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * A buffer is a reactive ordered list of elements
@@ -79,6 +80,12 @@ object Buffer {
     }
 
     result
+  }
+
+  implicit def FutureToReadBuffer[T](future: Future[Seq[T]]) (implicit exec: ExecutionContext): ReadBuffer[T] = {
+    val buf = Buffer[T]()
+    future.foreach(buf.set)
+    buf
   }
 }
 
