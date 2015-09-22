@@ -840,4 +840,21 @@ object ChannelTest extends SimpleTestSuite {
     assertEquals(andStates, mutable.ArrayBuffer(false, false, false, false, false, true))
     assertEquals(orStates, mutable.ArrayBuffer(false, true, false, true, true, true))
   }
+
+  test("implicit conversion from WriteChannel to function") {
+
+    type IntFunc = Int => Unit
+
+    val receiveChannel = Channel[Int]()
+    var received = mutable.ArrayBuffer.empty[Int]
+    receiveChannel.attach(received += _)
+
+    val writeChannel = receiveChannel.asInstanceOf[WriteChannel[Int]]
+    val func: IntFunc = writeChannel
+
+    func(3)
+    func(9)
+
+    assertEquals(received, mutable.ArrayBuffer(3, 9))
+  }
 }

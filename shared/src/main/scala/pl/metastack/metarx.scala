@@ -7,6 +7,11 @@ package object metarx extends OptImplicits {
     ch
   }
 
+  implicit def WriteChannelToFunction[T](f: WriteChannel[T]): T => Unit = {
+    t: T =>
+      f.produce(t)
+  }
+
   implicit class OptExtensions[T](opt: Opt[T]) {
     def :=(t: T) {
       opt := Some(t)
