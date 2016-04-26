@@ -479,10 +479,21 @@ class ChannelTest extends CompatTest {
   test("flatMap() (3)") {
     var value = ""
     Var(42)
-      .flatMap(x => Var(x.toString))
+      .flatMap((x: Int) => Var(x.toString))
       .filter(_ => true)
       .attach(value = _)
     assertEquals(value, "42")
+  }
+
+  test("flatMap() (4)") {
+    val v1 = Var(42)
+    val v2 = v1.map((x: Int) => x + 1)
+    var resultList: List[Int] = List.empty
+    v2.attach{ x => resultList = resultList ++ List(x) }
+    assertEquals (v2.get, 43)
+    v1.update(_ => 43)
+    assertEquals(v2.get, 44)
+    assertEquals(resultList, List(43, 44))
   }
 
   test("flatMapCh()") {
