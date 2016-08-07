@@ -760,7 +760,7 @@ trait ReadStateChannel[T] extends ReadChannel[T] {
   def get: T
 
   def flatMap[U](f: T => ReadStateChannel[U]): ReadStateChannel[U] = {
-    flatMap(f.asInstanceOf[T => ReadChannel[U]]).cache(f(get).get)
+    flatMap(f: T => ReadChannel[U]).cache(f(get).get)
   }
 
   override def map[U](f: T => U): ReadStateChannel[U] = {
